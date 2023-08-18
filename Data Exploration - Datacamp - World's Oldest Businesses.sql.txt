@@ -1,0 +1,89 @@
+#1. Select the oldest and newest founding years from the businesses table
+
+SELECT MIN(year_founded), MAX(year_founded) from businesses;
+
+
+
+#2. Get the count of rows in businesses where the founding year was before 1000
+
+SELECT COUNT(year_founded) from businesses
+WHERE year_founded <1000;
+
+
+
+#3. Select all columns from businesses where the founding year was before 1000, & Arrange the results from oldest to newest
+
+SELECT * from businesses
+WHERE year_founded <1000 order by year_founded;
+
+
+
+#4. Select business name, founding year, and country code from businesses; and category from categories where the founding year was before 1000, arranged from oldest to newest
+
+SELECT bus.business, bus.year_founded, bus.country_code, cat.category 
+FROM businesses AS bus 
+JOIN categories AS cat
+ON bus.category_code = cat.category_code
+WHERE year_founded < 1000
+ORDER BY year_founded;
+
+
+
+#5. Select the category and count of category (as "n") arranged by descending count, limited to 10 most common categories
+
+SELECT cat.category, COUNT(cat.category) AS n
+    FROM businesses AS bus
+    INNER JOIN categories AS cat
+        ON bus.category_code = cat.category_code
+    GROUP BY cat.category
+    ORDER BY n DESC
+    LIMIT 10;
+
+
+
+#6. Select the oldest founding year (as "oldest") from businesses, and continent from countries for each continent, ordered from oldest to newest
+
+SELECT MIN(bus.year_founded) AS oldest, cnt.continent
+    FROM businesses AS bus
+    INNER JOIN countries AS cnt
+        ON bus.country_code = cnt.country_code
+    GROUP BY continent
+    ORDER BY oldest;
+
+
+
+#7. Select the business, founding year, category, country, and continent
+
+SELECT business, year_founded, category, country, continent
+FROM countries AS cnt
+JOIN businesses AS bus
+    ON cnt.country_code = bus.country_code
+JOIN categories AS cat
+    ON cat.category_code = bus.category_code
+
+
+
+#8. Count the number of businesses in each continent and category
+
+SELECT continent, category, COUNT(business) AS n
+FROM countries AS cnt
+JOIN businesses AS bus
+    ON cnt.country_code = bus.country_code
+JOIN categories AS cat
+    ON cat.category_code = bus.category_code
+GROUP BY category, continent
+ORDER BY continent;
+
+
+
+#9. Repeat that previous query, filtering for results having a count greater than 5
+
+SELECT continent, category, COUNT(business) AS n
+FROM countries AS cnt
+JOIN businesses AS bus
+    ON cnt.country_code = bus.country_code
+JOIN categories AS cat
+    ON cat.category_code = bus.category_code
+GROUP BY category, continent
+HAVING COUNT(business) > 5
+ORDER BY n DESC;
